@@ -108,7 +108,7 @@ body.buka .kelopak{display:block}
 const CONFIG = {
   // Musik latar. Isi path/URL file mp3 (contoh: "assets/lagu.mp3"). Kosongkan jika tidak ada.
   // Musik otomatis diputar saat tombol "Buka Undangan" diklik.
-  musik: "assets/lagu.mp3",
+  musik: "lagu.mp3",
 
   // Nama tamu otomatis dari link: index.html?to=Nama+Tamu
   tamuDefault: "Tamu Undangan",
@@ -170,6 +170,7 @@ const CONFIG = {
 
   penutup: "Terima kasih atas doa restu dan kehadiran Anda. Merupakan kebahagiaan bagi kami."
 };
+
 </script>
 <!-- ============ AKHIR CONFIG ============ -->
 
@@ -330,7 +331,7 @@ hitung();setInterval(hitung,1000);
 const H=C.hadiah||{};
 $('qris').innerHTML=H.qris?`<img src="${esc(H.qris)}" alt="QRIS hadiah pernikahan">`:`<div class="kosong">QRIS belum diatur</div>`;
 $('rekening').innerHTML=(H.rekening||[]).map(r=>`
-  <div class="rek"><div>${esc(r.bank)}</div><b>${esc(r.nomor)}</b><div>a.n. ${esc(r.nama)}</div>
+  <div class="rek"><div>${esc(r.ewallet||r.bank||'')}</div><b>${esc(r.nomor)}</b><div>a.n. ${esc(r.nama)}</div>
   <button data-no="${esc(r.nomor)}">Salin Nomor</button></div>`).join('');
 document.querySelectorAll('.rek button').forEach(b=>b.onclick=async()=>{
   try{await navigator.clipboard.writeText(b.dataset.no);b.textContent='Tersalin';}catch(e){b.textContent=b.dataset.no;}
