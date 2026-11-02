@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Undangan Pernikahan</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Great+Vibes&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Great+Vibes&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --krim:#fbf6ee; --krim2:#f3e9dc; --daun:#5f7f5b; --daun2:#3f5d44; --mawar:#d98ba0; --mawar2:#b85c78;
@@ -54,6 +54,13 @@ section{padding:72px 20px;position:relative}
 #hero .dan{font-family:var(--tulis);font-size:2.6rem;color:var(--emas)}
 #hero .tgl{margin-top:18px;font-size:1.4rem;color:var(--daun2);font-weight:600}
 #hero .quote{max-width:500px;margin:20px auto 0;font-style:italic}
+
+/* AYAT & DOA */
+.mutiara{font-style:italic;font-size:1.35rem;max-width:520px;margin:0 auto 30px;color:var(--daun2)}
+.kutipan{margin:0 auto 22px;padding:26px 20px;background:#fff;border:1px solid #e6d7bd;border-radius:16px;box-shadow:0 8px 22px rgba(0,0,0,.08)}
+.arab{font-family:'Amiri','Traditional Arabic','Scheherazade New',serif;direction:rtl;text-align:center;font-size:clamp(1.7rem,6vw,2.2rem);line-height:2.2;color:var(--daun2);margin-bottom:12px}
+.arti{font-style:italic}
+.sumber{margin-top:8px;font-size:.95rem;letter-spacing:.06em;color:var(--emas);font-weight:600}
 
 /* MEMPELAI */
 .pasangan{display:grid;gap:40px;margin-top:20px}
@@ -114,6 +121,30 @@ const CONFIG = {
   tamuDefault: "Tamu Undangan",
 
   kalimatPembuka: "Seperti bunga yang mekar pada waktunya, kami percaya cinta tumbuh dengan sabar dan penuh syukur.",
+
+  // Kata mutiara (kosongkan "" untuk menyembunyikan)
+  mutiara: "Pernikahan bukan tentang menemukan orang yang sempurna, tetapi tentang belajar mencintai ketidaksempurnaan bersama.",
+
+  // Ayat pernikahan (tampil setelah bagian pembuka). Hapus isinya jika tidak dipakai.
+  ayat: {
+    arab: "وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُمْ مِنْ أَنْفُسِكُمْ أَزْوَاجًا لِتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُمْ مَوَدَّةً وَرَحْمَةً ۚ إِنَّ فِي ذَٰلِكَ لَآيَاتٍ لِقَوْمٍ يَتَفَكَّرُونَ",
+    arti: "Dan di antara tanda-tanda (kebesaran)-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya, dan Dia menjadikan di antara kamu rasa kasih dan sayang. Sungguh, pada yang demikian itu benar-benar terdapat tanda-tanda (kebesaran Allah) bagi kaum yang berpikir.",
+    sumber: "QS. Ar-Rum: 21"
+  },
+
+  // Doa pernikahan (tampil sebelum penutup). Boleh tambah atau hapus.
+  doa: [
+    {
+      arab: "بَارَكَ اللَّهُ لَكَ وَبَارَكَ عَلَيْكَ وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ",
+      arti: "Semoga Allah memberkahimu, memberkahi atasmu, dan mengumpulkan kalian berdua dalam kebaikan.",
+      sumber: "HR. Abu Dawud dan At-Tirmidzi"
+    },
+    {
+      arab: "رَبَّنَا هَبْ لَنَا مِنْ أَزْوَاجِنَا وَذُرِّيَّاتِنَا قُرَّةَ أَعْيُنٍ وَاجْعَلْنَا لِلْمُتَّقِينَ إِمَامًا",
+      arti: "Ya Tuhan kami, anugerahkanlah kepada kami pasangan kami dan keturunan kami sebagai penyenang hati (kami), dan jadikanlah kami pemimpin bagi orang-orang yang bertakwa.",
+      sumber: "QS. Al-Furqan: 74"
+    }
+  ],
 
   pria: {
     nama: "Ahmad abdul malik",
@@ -215,6 +246,14 @@ const CONFIG = {
   </div>
 </section>
 
+<!-- MUTIARA & AYAT -->
+<section id="secAyat">
+  <div class="wrap muncul">
+    <p class="mutiara" id="mutiara"></p>
+    <div class="kutipan" id="ayat"></div>
+  </div>
+</section>
+
 <!-- MEMPELAI -->
 <section class="alt">
   <div class="wrap muncul">
@@ -258,6 +297,15 @@ const CONFIG = {
   </div>
 </section>
 
+<!-- DOA -->
+<section class="alt" id="secDoa">
+  <div class="wrap muncul">
+    <h2>Doa untuk Mempelai</h2>
+    <div class="garis"></div>
+    <div id="doa"></div>
+  </div>
+</section>
+
 <footer>
   <h3 id="fNama"></h3>
   <p id="fPenutup"></p>
@@ -282,6 +330,15 @@ $('hTgl').textContent=fmtTgl(new Date(C.acara[0].waktu));
 $('hQuote').textContent=C.kalimatPembuka;
 $('fNama').textContent=`${C.pria.panggilan} & ${C.wanita.panggilan}`;
 $('fPenutup').textContent=C.penutup;
+
+// Kata mutiara, ayat, doa
+const kutip=k=>`<div class="arab" lang="ar">${esc(k.arab)}</div><div class="arti">${esc(k.arti)}</div><div class="sumber">${esc(k.sumber||'')}</div>`;
+if(C.mutiara)$('mutiara').textContent='“'+C.mutiara+'”';else $('mutiara').classList.add('tersembunyi');
+if(C.ayat&&C.ayat.arab)$('ayat').innerHTML=kutip(C.ayat);else $('ayat').classList.add('tersembunyi');
+if(!C.mutiara&&!(C.ayat&&C.ayat.arab))$('secAyat').classList.add('tersembunyi');
+const D=C.doa||[];
+$('doa').innerHTML=D.map(d=>`<div class="kutipan">${kutip(d)}</div>`).join('');
+if(!D.length)$('secDoa').classList.add('tersembunyi');
 
 // Taman bunga di cover
 const warna=['#e98aa3','#f4b6c2','#f6d28b','#ffffff','#c9a7e0','#f19a7a'];
