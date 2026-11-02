@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
-<head> 
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Undangan Pernikahan</title>
@@ -115,7 +115,8 @@ body.buka .kelopak{display:block}
 const CONFIG = {
   // Musik latar. Isi path/URL file mp3 (contoh: "assets/lagu.mp3"). Kosongkan jika tidak ada.
   // Musik otomatis diputar saat tombol "Buka Undangan" diklik.
-  musik: "https://drive.google.com/file/d/1OwSwDBIG9_KPzyUCk4QQqD8e0uhX5z3P",
+  // Taruh file mp3 di folder assets (di samping index.html) dengan nama lagu.mp3.
+  musik: "assets/lagu.mp3",
 
   // Nama tamu otomatis dari link: index.html?to=Nama+Tamu
   tamuDefault: "Tamu Undangan",
@@ -312,7 +313,7 @@ const CONFIG = {
 </footer>
 
 <button id="musik" aria-label="Putar atau jeda musik">♪</button>
-<audio id="audio" loop preload="none"></audio>
+<audio id="audio" loop preload="auto" playsinline></audio>
 
 <script>
 const $=id=>document.getElementById(id);
@@ -411,16 +412,36 @@ for(let i=0;i<14;i++){
 
 // Musik
 const audio=$('audio'),btnM=$('musik');
-if(C.musik){audio.src=C.musik}else{btnM.classList.add('tersembunyi')}
+if(C.musik){audio.src=C.musik;audio.preload='auto'}else{btnM.classList.add('tersembunyi')}
 const setMain=on=>btnM.classList.toggle('main',on);
-btnM.onclick=()=>{if(audio.paused){audio.play().then(()=>setMain(true)).catch(()=>{})}else{audio.pause();setMain(false)}};
+let dijeda=false;           // true kalau tamu sengaja menjeda lewat tombol ♪
+const PEMICU=['click','touchend','keydown','scroll'];
+function lepasPemicu(){PEMICU.forEach(e=>window.removeEventListener(e,pemicu,{capture:true}))}
+function pemicu(){
+  if(dijeda||!audio.paused){lepasPemicu();return}
+  audio.play().then(()=>{setMain(true);lepasPemicu()}).catch(()=>{});
+}
+function putarMusik(){
+  if(!C.musik)return;
+  audio.play().then(()=>{setMain(true);lepasPemicu()}).catch(()=>{
+    // Autoplay ditolak browser -> coba lagi di sentuhan/scroll pertama tamu
+    setMain(false);
+    PEMICU.forEach(e=>window.addEventListener(e,pemicu,{capture:true,passive:true}));
+  });
+}
+audio.addEventListener('error',()=>{console.warn('Musik gagal dimuat. Cek path/link file mp3.',audio.error);setMain(false)});
+btnM.onclick=e=>{
+  e.stopPropagation();
+  if(audio.paused){dijeda=false;audio.play().then(()=>setMain(true)).catch(()=>{})}
+  else{dijeda=true;audio.pause();setMain(false)}
+};
 
 // Buka undangan (musik mulai di sini)
 $('btnBuka').onclick=()=>{
   $('cover').classList.add('tutup');
   document.body.classList.add('buka');
   window.scrollTo(0,0);
-  if(C.musik)audio.play().then(()=>setMain(true)).catch(()=>setMain(false));
+  putarMusik();
   setTimeout(()=>$('cover').classList.add('tersembunyi'),1300);
 };
 
