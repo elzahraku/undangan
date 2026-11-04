@@ -70,6 +70,7 @@ section{padding:72px 20px;position:relative}
 .mempelai h3{font-family:var(--tulis);font-size:2.6rem;color:var(--mawar2);line-height:1.15}
 .mempelai small{display:block}
 .mempelai .anak{margin-top:6px;font-style:italic}
+.mempelai .usia{margin-top:2px;font-weight:600;color:var(--emas);letter-spacing:.06em}
 
 /* ACARA */
 #hitung{display:flex;gap:12px;justify-content:center;margin:6px 0 32px;flex-wrap:wrap}
@@ -150,6 +151,7 @@ const CONFIG = {
   pria: {
     nama: "Ahmad abdul malik",
     panggilan: "Malik",
+    usia: "25 Tahun",                 // GANTI sesuai usia asli; kosongkan "" untuk menyembunyikan
     foto: "https://i.ibb.co.com/WNnVj5c8/photo-2026-11-02-09-19-20-7703501909595783244.jpg",                  // path/URL foto, kosongkan = siluet
     anakKe: "Putra ke tiga dari",
     ayah: "Bapak Agung",
@@ -158,6 +160,7 @@ const CONFIG = {
   wanita: {
     nama: "Inayah",
     panggilan: "Matca",
+    usia: "23 Tahun",                 // GANTI sesuai usia asli; kosongkan "" untuk menyembunyikan
     foto: "https://i.ibb.co.com/67Txcb7J/photo-2026-11-02-09-19-33-7703502201653559452.jpg",
     anakKe: "Putri Pertama dari",
     ayah: "Bapak Wibowo",
@@ -357,6 +360,7 @@ const kartu=(p,peran)=>`
     <div class="bingkai">${p.foto?`<img src="${esc(p.foto)}" alt="Foto ${esc(p.panggilan)}">`:`<svg viewBox="0 0 100 125" width="70%" aria-hidden="true"><use href="#siluet"/></svg>`}</div>
     <h3>${esc(p.nama)}</h3>
     <div>${peran}</div>
+    ${p.usia?`<div class="usia">${esc(p.usia)}</div>`:''}
     <div class="anak">${esc(p.anakKe)}</div>
     <small><b>${esc(p.ayah)}</b></small>
     <small>&amp;</small>
